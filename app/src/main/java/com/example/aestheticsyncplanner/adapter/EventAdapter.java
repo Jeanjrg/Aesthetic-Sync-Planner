@@ -19,6 +19,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     private List<Event> events;
     private OnItemClickListener listener;
+    private boolean showCheckbox = true;
 
     public interface OnItemClickListener {
         void onItemClick(Event event);
@@ -28,6 +29,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public EventAdapter(List<Event> events, OnItemClickListener listener) {
         this.events = events;
         this.listener = listener;
+    }
+
+    public void setShowCheckbox(boolean showCheckbox) {
+        this.showCheckbox = showCheckbox;
     }
 
     @NonNull
@@ -44,9 +49,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         String timeRange = formatTime(event.getStartDate()) + " - " + formatTime(event.getEndDate());
         holder.tvTimeRange.setText(timeRange);
         holder.tvDescription.setText(event.getDescription());
-        holder.tvCategoryTag.setText(event.getCategory());
-        holder.cbCompleted.setOnCheckedChangeListener(null);
         holder.cbCompleted.setChecked(event.isCompleted());
+
+        // Hide checkbox if required (for PassedFragment)
+        holder.cbCompleted.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+
+        // Initially hide description
+        holder.tvDescription.setVisibility(View.GONE);
 
         // Category specific styling
         if ("Work".equalsIgnoreCase(event.getCategory())) {
@@ -57,7 +66,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             // ... more categories
         }
 
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(event));
+        // Toggle description when clicking outside checkbox
+        holder.itemView.setOnClickListener(v -> {
+            if (holder.tvDescription.getVisibility() == View.VISIBLE) {
+                holder.tvDescription.setVisibility(View.GONE);
+            } else {
+                holder.tvDescription.setVisibility(View.VISIBLE);
+            }
+            listener.onItemClick(event);
+        });
+
+        holder.cbCompleted.setOnCheckedChangeListener(null);
+        holder.cbCompleted.setChecked(event.isCompleted());
         holder.cbCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
             event.setCompleted(isChecked);
             listener.onCompleteChanged(event, isChecked);

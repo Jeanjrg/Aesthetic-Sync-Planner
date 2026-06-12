@@ -33,6 +33,7 @@ public class PassedFragment extends Fragment {
                 dbHelper.updateEvent(event);
             }
         });
+        adapter.setShowCheckbox(false);
         rvPassed.setAdapter(adapter);
 
         // For simplicity, just load all from DB and filter if needed
