@@ -127,10 +127,18 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void setupEventList() {
-        eventAdapter = new EventAdapter(new ArrayList<>(), event -> {
-            Intent intent = new Intent(getActivity(), AddEditEventActivity.class);
-            intent.putExtra("event", event);
-            startActivity(intent);
+        eventAdapter = new EventAdapter(new ArrayList<>(), new EventAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Event event) {
+                Intent intent = new Intent(getActivity(), AddEditEventActivity.class);
+                intent.putExtra("event", event);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCompleteChanged(Event event, boolean isCompleted) {
+                dbHelper.updateEvent(event);
+            }
         });
         rvUpcoming.setAdapter(eventAdapter);
     }

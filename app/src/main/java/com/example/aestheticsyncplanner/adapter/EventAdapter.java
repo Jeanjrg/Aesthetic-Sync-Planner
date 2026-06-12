@@ -22,6 +22,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     public interface OnItemClickListener {
         void onItemClick(Event event);
+        void onCompleteChanged(Event event, boolean isCompleted);
     }
 
     public EventAdapter(List<Event> events, OnItemClickListener listener) {
@@ -44,6 +45,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.tvTimeRange.setText(timeRange);
         holder.tvDescription.setText(event.getDescription());
         holder.tvCategoryTag.setText(event.getCategory());
+        holder.cbCompleted.setOnCheckedChangeListener(null);
         holder.cbCompleted.setChecked(event.isCompleted());
 
         // Category specific styling
@@ -58,7 +60,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.itemView.setOnClickListener(v -> listener.onItemClick(event));
         holder.cbCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
             event.setCompleted(isChecked);
-            // Optionally notify listener to update DB
+            listener.onCompleteChanged(event, isChecked);
         });
     }
 

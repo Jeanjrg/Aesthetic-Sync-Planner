@@ -22,8 +22,16 @@ public class PassedFragment extends Fragment {
         RecyclerView rvPassed = view.findViewById(R.id.rvPassed);
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
 
-        EventAdapter adapter = new EventAdapter(new ArrayList<>(), event -> {
-            // Logic for passed event click if needed
+        EventAdapter adapter = new EventAdapter(new ArrayList<>(), new EventAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(com.example.aestheticsyncplanner.model.Event event) {
+                // Logic for passed event click if needed
+            }
+
+            @Override
+            public void onCompleteChanged(com.example.aestheticsyncplanner.model.Event event, boolean isCompleted) {
+                dbHelper.updateEvent(event);
+            }
         });
         rvPassed.setAdapter(adapter);
 
