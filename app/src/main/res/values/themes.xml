@@ -3,6 +3,17 @@
     <style name="Base.Theme.AestheticSyncPlanner" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:dateTextAppearance">@style/CalendarDateText</item>
+        <item name="android:weekDayTextAppearance">@style/CalendarWeekDayText</item>
+    </style>
+
+    <style name="CalendarDateText" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="CalendarWeekDayText" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Theme.AestheticSyncPlanner" parent="Base.Theme.AestheticSyncPlanner" />

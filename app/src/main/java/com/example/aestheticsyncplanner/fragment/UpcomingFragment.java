@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.widget.CalendarView;
 import android.widget.ImageButton;
 import com.example.aestheticsyncplanner.AddEditEventActivity;
 import com.example.aestheticsyncplanner.DetailActivity;
@@ -45,14 +46,15 @@ import retrofit2.Response;
 public class UpcomingFragment extends Fragment {
 
     private static final String TAG = "UpcomingFragment";
-    private RecyclerView rvUpcoming, rvDates;
+    private RecyclerView rvUpcoming;
+    private CalendarView calendarView;
     private EventAdapter eventAdapter;
-    private DateAdapter dateAdapter;
     private SwipeRefreshLayout swipeRefresh;
     private DatabaseHelper dbHelper;
     private TextView tvCurrentMonth, tvCurrentDateFull;
     private ImageButton btnRefresh;
     private MaterialSwitch switchDarkMode;
+    private Calendar currentCalendar = Calendar.getInstance();
 
     @Nullable
     @Override
@@ -60,7 +62,7 @@ public class UpcomingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         
         rvUpcoming = view.findViewById(R.id.rvUpcoming);
-        rvDates = view.findViewById(R.id.rvDates);
+        calendarView = view.findViewById(R.id.calendarView);
         swipeRefresh = view.findViewById(R.id.swipeRefresh);
         tvCurrentMonth = view.findViewById(R.id.tvCurrentMonth);
         tvCurrentDateFull = view.findViewById(R.id.tvCurrentDateFull);
@@ -70,7 +72,7 @@ public class UpcomingFragment extends Fragment {
 
         dbHelper = new DatabaseHelper(getContext());
 
-        setupDateList();
+        setupCalendar();
         setupEventList();
 
         swipeRefresh.setOnRefreshListener(this::fetchEvents);
@@ -83,11 +85,11 @@ public class UpcomingFragment extends Fragment {
         setupDarkModeSwitch();
 
         view.findViewById(R.id.btnToday).setOnClickListener(v -> {
-            Date today = new Date();
-            updateHeader(today);
-            dateAdapter.setSelectedPosition(0);
-            rvDates.scrollToPosition(0);
-            loadLocalData();
+            long today = System.currentTimeMillis();
+            calendarView.setDate(today);
+            currentCalendar.setTimeInMillis(today);
+            updateHeader(new Date(today));
+            filterEventsByDate(new Date(today));
         });
 
         updateHeader(new Date());
@@ -97,20 +99,13 @@ public class UpcomingFragment extends Fragment {
         return view;
     }
 
-    private void setupDateList() {
-        List<Date> dates = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-        for (int i = 0; i < 30; i++) {
-            dates.add(cal.getTime());
-            cal.add(Calendar.DAY_OF_YEAR, 1);
-        }
-
-        dateAdapter = new DateAdapter(dates, (date, position) -> {
-            updateHeader(date);
-            filterEventsByDate(date);
+    private void setupCalendar() {
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            currentCalendar.set(year, month, dayOfMonth);
+            Date selectedDate = currentCalendar.getTime();
+            updateHeader(selectedDate);
+            filterEventsByDate(selectedDate);
         });
-        rvDates.setAdapter(dateAdapter);
-        dateAdapter.setSelectedPosition(0);
     }
 
     private void filterEventsByDate(Date date) {
@@ -170,15 +165,8 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void loadLocalData() {
-        if (dateAdapter != null) {
-            int selectedPos = dateAdapter.getSelectedPosition();
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR, selectedPos);
-            filterEventsByDate(cal.getTime());
-        } else {
-            List<Event> events = dbHelper.getAllEvents();
-            eventAdapter.setEvents(events);
-        }
+        Date selectedDate = currentCalendar.getTime();
+        filterEventsByDate(selectedDate);
     }
 
     private void fetchEvents() {

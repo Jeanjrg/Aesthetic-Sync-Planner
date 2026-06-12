@@ -80,27 +80,34 @@
                         android:textColor="@color/text_secondary"/>
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnToday"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:backgroundTint="@color/secondary"
-                    android:text="Today"
-                    android:textColor="@color/primary"
-                    android:textAllCaps="false"
-                    app:cornerRadius="20dp"/>
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnToday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/secondary"
+                        android:text="Today"
+                        android:textColor="@color/primary"
+                        android:textAllCaps="false"
+                        app:cornerRadius="20dp"/>
+                </LinearLayout>
             </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDates"
+            <CalendarView
+                android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_date" />
+                android:focusedMonthDateColor="@color/primary"
+                android:selectedWeekBackgroundColor="@color/secondary"
+                android:unfocusedMonthDateColor="@color/text_secondary" />
 
             <LinearLayout
                 android:layout_width="match_parent"
