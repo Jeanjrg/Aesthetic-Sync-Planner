@@ -94,7 +94,11 @@ public class UpcomingFragment extends Fragment {
 
         updateHeader(new Date());
         loadLocalData();
-        fetchEvents();
+        
+        // Only fetch events if this is NOT an activity recreation (like theme change)
+        if (savedInstanceState == null) {
+            fetchEvents();
+        }
 
         return view;
     }
@@ -189,7 +193,7 @@ public class UpcomingFragment extends Fragment {
                             dbHelper.insertEvent(event);
                         }
                         loadLocalData();
-                        Toast.makeText(getContext(), "Berhasil memuat " + events.size() + " acara nasional", Toast.LENGTH_SHORT).show();
+                        // Removed Toast to avoid lag and annoyance during theme change
                     } else {
                         Log.w(TAG, "API returned successful response but empty items list");
                         Toast.makeText(getContext(), "Tidak ada acara ditemukan di kalender", Toast.LENGTH_SHORT).show();

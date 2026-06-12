@@ -38,7 +38,6 @@ public class PassedFragment extends Fragment {
 
         // For simplicity, just load all from DB and filter if needed
         adapter.setEvents(dbHelper.getAllEvents());
-
         return view;
     }
 }
