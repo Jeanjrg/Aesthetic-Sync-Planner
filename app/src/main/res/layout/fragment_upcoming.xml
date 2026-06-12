@@ -93,15 +93,32 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_date" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="JADWAL HARI INI"
-                android:letterSpacing="0.1"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:letterSpacing="0.1"
+                    android:text="JADWAL HARI INI"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary" />
+
+                <ImageButton
+                    android:id="@+id/btnRefresh"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/stat_notify_sync"
+                    app:tint="@color/text_secondary"
+                    android:contentDescription="Refresh Calendar" />
+            </LinearLayout>
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -130,13 +147,5 @@
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/primary"
         app:tint="@color/on_primary" />
-
-    <Button
-        android:id="@+id/btnRefresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Refresh"
-        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -76,6 +76,10 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.DateViewHolder
         notifyItemChanged(selectedPosition);
     }
 
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
     static class DateViewHolder extends RecyclerView.ViewHolder {
         TextView tvDayName, tvDayNumber;
 

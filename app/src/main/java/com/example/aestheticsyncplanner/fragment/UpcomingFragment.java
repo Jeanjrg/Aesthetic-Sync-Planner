@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.widget.ImageButton;
 import com.example.aestheticsyncplanner.AddEditEventActivity;
 import com.example.aestheticsyncplanner.DetailActivity;
 import com.example.aestheticsyncplanner.R;
@@ -50,7 +51,7 @@ public class UpcomingFragment extends Fragment {
     private SwipeRefreshLayout swipeRefresh;
     private DatabaseHelper dbHelper;
     private TextView tvCurrentMonth, tvCurrentDateFull;
-    private Button btnRefresh;
+    private ImageButton btnRefresh;
     private MaterialSwitch switchDarkMode;
 
     @Nullable
@@ -161,13 +162,19 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void loadLocalData() {
-        List<Event> events = dbHelper.getAllEvents();
-        eventAdapter.setEvents(events);
+        if (dateAdapter != null) {
+            int selectedPos = dateAdapter.getSelectedPosition();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, selectedPos);
+            filterEventsByDate(cal.getTime());
+        } else {
+            List<Event> events = dbHelper.getAllEvents();
+            eventAdapter.setEvents(events);
+        }
     }
 
     private void fetchEvents() {
         swipeRefresh.setRefreshing(true);
-        btnRefresh.setVisibility(View.GONE);
 
         String calendarId = "id.indonesian%23holiday@group.v.calendar.google.com";
         String apiKey = "AIzaSyDnr_H5Fj_OxmXafrvOB5_U5gtC1tQFlGo";
@@ -185,11 +192,8 @@ public class UpcomingFragment extends Fragment {
                             Log.d(TAG, "Inserting event: " + event.getTitle() + " (" + event.getStartDate() + ")");
                             dbHelper.insertEvent(event);
                         }
-                        List<Event> updatedEvents = dbHelper.getAllEvents();
-                        Log.d(TAG, "Database updated. Total events in DB: " + updatedEvents.size());
-                        
-                        eventAdapter.setEvents(updatedEvents);
-                        Toast.makeText(getContext(), "Berhasil memuat " + events.size() + " acara", Toast.LENGTH_SHORT).show();
+                        loadLocalData();
+                        Toast.makeText(getContext(), "Berhasil memuat " + events.size() + " acara nasional", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.w(TAG, "API returned successful response but empty items list");
                         Toast.makeText(getContext(), "Tidak ada acara ditemukan di kalender", Toast.LENGTH_SHORT).show();
@@ -201,7 +205,6 @@ public class UpcomingFragment extends Fragment {
                     } catch (Exception e) { e.printStackTrace(); }
                     
                     Log.e(TAG, "API Error: " + response.code() + " - " + errorBody);
-                    btnRefresh.setVisibility(View.VISIBLE);
                     
                     String message = "Gagal memuat data: " + response.code();
                     if (response.code() == 403) {
@@ -218,7 +221,6 @@ public class UpcomingFragment extends Fragment {
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 swipeRefresh.setRefreshing(false);
                 Log.e(TAG, "Network Failure: " + t.getMessage(), t);
-                btnRefresh.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Kesalahan jaringan: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 loadLocalData();
             }
