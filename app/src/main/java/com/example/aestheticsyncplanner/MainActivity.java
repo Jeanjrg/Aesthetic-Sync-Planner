@@ -41,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            
+            // Apply bottom inset specifically to the BottomNavigationView
+            binding.bottomNav.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
 
@@ -71,34 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem darkModeItem = menu.findItem(R.id.action_dark_mode);
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        boolean isDarkMode = prefs.getBoolean(KEY_IS_DARK_MODE, false);
-        darkModeItem.setTitle(isDarkMode ? R.string.action_light_mode : R.string.action_dark_mode);
-        return true;
+        return false;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_dark_mode) {
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            boolean isDarkMode = prefs.getBoolean(KEY_IS_DARK_MODE, false);
-            boolean newDarkMode = !isDarkMode;
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(KEY_IS_DARK_MODE, newDarkMode);
-            editor.apply();
-
-            if (newDarkMode) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-            recreate();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
