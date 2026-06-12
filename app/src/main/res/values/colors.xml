@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#C2185B</color>
+    <color name="primary_variant">#8C0032</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="secondary">#F8BBD0</color>
+    <color name="background">#FFF8F9</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="tag_work">#FCE4EC</color>
+    <color name="tag_personal">#F3E5F5</color>
+    <color name="tag_work_text">#C2185B</color>
+    <color name="tag_personal_text">#7B1FA2</color>
+</resources>
