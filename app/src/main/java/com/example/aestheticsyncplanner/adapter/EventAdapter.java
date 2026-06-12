@@ -46,8 +46,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = events.get(position);
         holder.tvTitle.setText(event.getTitle());
-        String timeRange = formatTime(event.getStartDate()) + " - " + formatTime(event.getEndDate());
-        holder.tvTimeRange.setText(timeRange);
+        
+        String timeDisplay;
+        if (event.getStartDate().equals(event.getEndDate()) && event.getStartDate().endsWith("T00:00:00Z")) {
+            timeDisplay = "All Day";
+        } else {
+            timeDisplay = formatTime(event.getStartDate()) + " - " + formatTime(event.getEndDate());
+        }
+        holder.tvTimeRange.setText(timeDisplay);
+
         holder.tvDescription.setText(event.getDescription());
         holder.cbCompleted.setChecked(event.isCompleted());
 
@@ -85,11 +92,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private String formatTime(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) return "00:00";
         try {
-            // Adjust based on Google Calendar date format (usually ISO 8601)
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
             Date date = sdf.parse(dateStr);
-            SimpleDateFormat timeFmt = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
             return timeFmt.format(date);
         } catch (Exception e) {
             return "00:00";
